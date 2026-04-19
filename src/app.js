@@ -1,9 +1,5 @@
 /* ── app.js — Bootstrap de la aplicación ── */
 
-import { inject } from "@vercel/analytics"
-
-inject()
-
 $(document).ready(async function () {
 
   // ── Cursor personalizado ──────────────────────────────────
