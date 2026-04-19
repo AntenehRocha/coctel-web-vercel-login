@@ -267,9 +267,9 @@ ul { list-style: none; }
 /* ─── Page transitions ───────────────────────────────────────── */
 #app {
   min-height: calc(100vh - 64px);
-  animation: pageFade .35s ease both;
+  animation: pageFade .4s ease both;
 }
-@keyframes pageFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes pageFade { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 
 /* ─── HERO ────────────────────────────────────────────────────── */
 .hero {
@@ -283,14 +283,19 @@ ul { list-style: none; }
 .orb {
   position: absolute; border-radius: 50%; pointer-events: none;
   filter: blur(90px);
+  animation: orbFloat 8s ease-in-out infinite;
 }
-.orb-1 { width: 600px; height: 600px; background: rgba(200,168,75,0.10); top: -200px; left: -200px; }
-.orb-2 { width: 500px; height: 500px; background: rgba(212,120,48,0.07); bottom: -150px; right: -150px; }
-.orb-3 { width: 350px; height: 350px; background: rgba(120,60,180,0.05); top: 30%; left: 50%; transform: translateX(-50%); }
+.orb-1 { width: 600px; height: 600px; background: rgba(200,168,75,0.10); top: -200px; left: -200px; animation-delay: 0s; }
+.orb-2 { width: 500px; height: 500px; background: rgba(212,120,48,0.07); bottom: -150px; right: -150px; animation-delay: -3s; }
+.orb-3 { width: 350px; height: 350px; background: rgba(120,60,180,0.05); top: 30%; left: 50%; transform: translateX(-50%); animation-delay: -6s; }
+@keyframes orbFloat { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-30px) scale(1.05); } }
+.orb-3 { animation: orbFloat3 10s ease-in-out infinite; }
+@keyframes orbFloat3 { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-20px); } }
 
 .hero-eyebrow {
   font-size: .75rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase;
   color: var(--gold); margin-bottom: 1.4rem;
+  animation: fadeUp .6s .2s both;
 }
 .hero-title {
   font-family: 'Cormorant Garamond', serif;
@@ -298,13 +303,19 @@ ul { list-style: none; }
   font-weight: 700; line-height: 1.05;
   color: var(--text-1);
   margin-bottom: 1.2rem;
+  animation: fadeUp .6s .35s both;
 }
 .hero-title em { font-style: italic; color: var(--gold-bright); }
-.hero-sub { font-size: 1rem; color: var(--text-2); max-width: 500px; margin: 0 auto 3rem; line-height: 1.7; }
+.hero-sub {
+  font-size: 1rem; color: var(--text-2); max-width: 500px; margin: 0 auto 3rem; line-height: 1.7;
+  animation: fadeUp .6s .5s both;
+}
+@keyframes fadeUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: none; } }
 
 /* ─── Glass Search Bar ───────────────────────────────────────── */
 .search-wrap {
   position: relative; max-width: 600px; margin: 0 auto;
+  animation: fadeUp .6s .65s both;
 }
 .search-glass {
   display: flex; align-items: center; gap: .5rem;
@@ -364,6 +375,7 @@ ul { list-style: none; }
   padding: .7rem 1.1rem;
   border-bottom: 1px solid var(--border);
   transition: background var(--transition);
+  cursor: pointer;
 }
 .sug-item:last-child { border-bottom: none; }
 .sug-item:hover { background: var(--glass-card-h); }
@@ -392,30 +404,28 @@ ul { list-style: none; }
 .refresh-btn {
   display: flex; align-items: center; gap: .5rem;
   background: var(--glass-card);
-  border: 1px solid var(--border-2);
-  border-radius: 100px;
+  border: 1px solid var(--border);
+  border-radius: 50px;
   padding: .5rem 1.2rem;
-  font-size: .78rem; font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
+  font-size: .8rem; font-weight: 400; letter-spacing: .06em;
   color: var(--text-2);
   transition: all var(--transition);
 }
-.refresh-btn:hover { border-color: var(--gold); color: var(--gold); background: rgba(200,168,75,.07); }
+.refresh-btn:hover { border-color: var(--gold); color: var(--gold); background: rgba(200,168,75,.06); }
 .refresh-icon { display: inline-block; transition: transform .5s cubic-bezier(.34,1.56,.64,1); }
 .refresh-btn:hover .refresh-icon { transform: rotate(180deg); }
 
-/* ─── Card Grid ──────────────────────────────────────────────── */
+/* ─── Cards Grid ─────────────────────────────────────────────── */
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1.4rem;
 }
 
-/* ─── Cocktail Card — Liquid Glass ──────────────────────────── */
+/* ─── Cocktail Card — Liquid Glass ───────────────────────────── */
 .cocktail-card {
   position: relative;
   background: var(--glass-card);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -516,9 +526,11 @@ ul { list-style: none; }
 }
 .ske-line.short { width: 38%; }
 .ske-line.mid   { width: 62%; }
-.ske-img { animation: shimmer 1.5s infinite;
+.ske-img {
+  animation: shimmer 1.5s infinite;
   background: linear-gradient(90deg, var(--bg-2) 25%, var(--bg-3) 50%, var(--bg-2) 75%);
-  background-size: 200% 100%; }
+  background-size: 200% 100%;
+}
 @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 
 /* ─── No results ─────────────────────────────────────────────── */
@@ -555,7 +567,6 @@ ul { list-style: none; }
   transition: transform .35s var(--bounce);
 }
 .modal-bg.open .modal-glass { transform: none; }
-/* Shine on top edge */
 .modal-glass::before {
   content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
@@ -572,7 +583,6 @@ ul { list-style: none; }
 }
 .modal-close-btn:hover { background: rgba(224,85,69,.15); color: #E05545; border-color: #E05545; }
 
-/* Modal content layout */
 .modal-layout { display: grid; grid-template-columns: 300px 1fr; gap: 2rem; padding: 1.5rem 2rem 2.5rem; }
 .modal-img-wrap { position: relative; }
 .modal-img {
@@ -580,7 +590,6 @@ ul { list-style: none; }
   aspect-ratio: 1; object-fit: cover;
   box-shadow: var(--shadow-deep);
 }
-/* Glass reflection on modal image */
 .modal-img-wrap::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 40%;
   background: linear-gradient(to bottom, rgba(255,255,255,.1), transparent);
@@ -650,7 +659,6 @@ ul { list-style: none; }
   box-shadow: var(--shadow-deep);
 }
 .drawer-bg.open .auth-drawer { transform: none; }
-/* Top shine */
 .auth-drawer::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,.15), transparent);
@@ -792,6 +800,15 @@ ul { list-style: none; }
 @keyframes toastIn  { from { opacity:0; transform: translateX(20px); } to { opacity:1; transform: none; } }
 @keyframes toastOut { to   { opacity:0; transform: translateX(20px); } }
 
+/* ─── Scrollbar personalizada ───────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold-dim); }
+
+/* ─── Selection ─────────────────────────────────────────────── */
+::selection { background: rgba(200,168,75,.25); color: var(--text-1); }
+
 /* ─── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .header-inner { padding: 0 1.2rem; }
@@ -805,9 +822,9 @@ ul { list-style: none; }
   .modal-glass { border-radius: var(--radius-lg); }
   .search-page-hero { padding: 3rem 1.2rem 1.5rem; }
   .favs-hero { padding: 3rem 1.2rem 1rem; }
-  .cards-grid.section { padding: 1rem 1.2rem 3rem; }
 }
 @media (max-width: 480px) {
   .hero-title { font-size: 2.8rem; }
   .modal-name { font-size: 1.8rem; }
+  .cards-grid { grid-template-columns: repeat(2, 1fr); gap: .75rem; }
 }

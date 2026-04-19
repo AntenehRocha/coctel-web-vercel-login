@@ -7,6 +7,17 @@ const API = (function() {
     (localStorage.getItem('hc-backend') || '').trim() ||
     'http://localhost:3001';
 
+  // ── Token JWT (fallback cuando las cookies cross-origin no llegan) ──
+  // El backend devuelve el token en la respuesta Y lo setea como cookie.
+  // Lo guardamos en memoria (no localStorage, más seguro) como respaldo.
+  let _memToken = null;
+
+  function setToken(t)  { _memToken = t; }
+  function clearToken() { _memToken = null; }
+  function getAuthHeaders() {
+    return _memToken ? { Authorization: 'Bearer ' + _memToken } : {};
+  }
+
   // ── CocktailDB ─────────────────────────────────────────────
   async function getRandom() {
     const res = await $.ajax({
@@ -47,8 +58,6 @@ const API = (function() {
     const res = await $.getJSON(COCKTAIL_DB + '/filter.php', { c: category });
     const list = res.drinks || [];
     if (list.length === 0) return [];
-    // `filter.php` devuelve resultados “ligeros” (sin ingredientes, vaso, etc.)
-    // Para mantener la UI consistente, ampliamos con `lookup.php` en paralelo (limitado).
     const ids = list.slice(0, 24).map(d => d.idDrink);
     const full = await Promise.all(ids.map(id => getById(id).catch(() => null)));
     return full.filter(Boolean);
@@ -66,25 +75,31 @@ const API = (function() {
       method,
       contentType: 'application/json',
       data: data ? JSON.stringify(data) : undefined,
-      xhrFields: { withCredentials: true },
+      xhrFields:   { withCredentials: true },  // envía cookies
+      headers:     getAuthHeaders(),            // fallback Bearer token
     });
   }
 
-  // Auth
+  // ── Auth ───────────────────────────────────────────────────
   async function register(username, email, password) {
-    return backendRequest('POST', '/auth/register', { username, email, password });
+    const res = await backendRequest('POST', '/auth/register', { username, email, password });
+    if (res.token) setToken(res.token);
+    return res;
   }
   async function login(email, password) {
-    return backendRequest('POST', '/auth/login', { email, password });
+    const res = await backendRequest('POST', '/auth/login', { email, password });
+    if (res.token) setToken(res.token);
+    return res;
   }
   async function logout() {
+    clearToken();
     return backendRequest('POST', '/auth/logout');
   }
   async function getMe() {
     return backendRequest('GET', '/auth/me');
   }
 
-  // Favorites
+  // ── Favorites ──────────────────────────────────────────────
   async function getFavorites() {
     return backendRequest('GET', '/favorites');
   }
